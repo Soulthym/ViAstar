@@ -1,14 +1,14 @@
 ALL: EXE LANCEMENT RM
 DEBUG: EXE LANCEMENTVAL RM
 
-easyalloc.o: easyalloc.c main.h
-	gcc -Wall -o easyalloc.o -c easyalloc.c -g
+libs.o: libs.c main.h
+	gcc -Wall -o libs.o -c libs.c -g
 
-main.o: astar.c main.h
+main.o: main.c main.h
 	gcc -Wall -c main.c -o main.o -g
 
-EXE: main.o easyalloc.o main.h
-	gcc -Wall -o EXE main.o easyalloc.o -g
+EXE: main.o libs.o main.h
+	gcc -Wall -o EXE main.o libs.o -g
 
 LANCEMENT:
 	./EXE
