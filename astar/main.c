@@ -116,7 +116,8 @@ double tempsRER(long double lat1, long double lon1, long double lat2, long doubl
 int main(int argc, char **argv) {
   alscd* Sess = NewLscdAlloc();
   //getGraphFromFile("data.txt",Sess);
-  printf("%f\n",tempsPieton(48.783315, 2.286803, 47.884158, 6.275417));
+  // printf("%f\n",tempsPieton(48.783315, 2.286803, 47.884158, 6.275417));
+  printf("%lu\n",sizeof(sta));
   FreeAll(Sess);
   return 0;
 }
