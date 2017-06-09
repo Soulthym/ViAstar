@@ -5,10 +5,10 @@ libs.o: libs.c main.h
 	gcc -Wall -o libs.o -c libs.c -g
 
 main.o: main.c main.h
-	gcc -Wall -c main.c -o main.o -g
+	gcc -Wall -c main.c -o main.o -g -lm
 
 EXE: main.o libs.o main.h
-	gcc -Wall -o EXE main.o libs.o -g
+	gcc -Wall -o EXE main.o libs.o -g -lm
 
 LANCEMENT:
 	./EXE
