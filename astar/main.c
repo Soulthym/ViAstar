@@ -1,52 +1,82 @@
 #include "main.h"
 #include <float.h>
 #include <math.h>
+#include <string.h>
 
 #define pi 3.14159265358979323846
-
-typedef struct station{
-  int id;
-  char name[50];
-  long double lat;
-  long double lon;
-  struct station *nxt;
-}sta;
-
-typedef struct ligne{
-  sta* start;
-  sta* end;
-  sta* curr;
-  char name[5];
-}lig;
 
 long double deg2rad(long double deg) {
   return (deg * pi / 180);
 }
 
-lig* NewLig(alscd* Session){
-  lig* L = Alloc(Session,sizeof(lig));
-  L->start = NULL;
-  L->end = NULL;
-  L->curr = NULL;
-  int i;
-  for(i = 0; i < 3; i++)
-    L->name[i] = '\0';
-  return L;
+size_t fgetStr(FILE* F,char* str, size_t maxSize, char* endChars) {
+    size_t i = 0;
+    char c;
+    for(c = fgetc(F);(i < maxSize); c = fgetc(F), i++) {
+        if (strchr(endChars, c)) {
+            str[i] = '\0';
+            break;
+        }
+        str[i] = c;
+    }
+    return i;
 }
 
-sta* NewSta(alscd* Session){
-  sta* S = Alloc(Session,sizeof(sta));
-  S->id = -1;
-  S->lat = -1;
-  S->lon = -1;
-  int i;
-  for(i = 0; i < 50; i++)
-    S->name[i] = '\0';
-  return S;
+void replace(char *chaine, char find, char new)
+{
+    char *p = NULL;
+    do {
+        p = strchr(chaine, find);
+        if (p)
+        {
+            *p = new;
+        }
+    } while (p);
 }
 
 void print(int val) {
   printf("%d\n",val);
+}
+
+int sum(int* Tab, int size) {
+    int i, sum = 0;
+    for(i = 0; i < size; i++){
+        sum += Tab[i];
+    }
+    return sum;
+}
+
+int countStations(FILE* F) {
+    int id = 0;
+    int max = 0;
+    char line[255] = {'\0'};
+    char endChars[4] = {'\n', EOF, '\r', '\0'};
+    fseek(F, SEEK_SET,0);
+    while (fgetStr(F, line ,sizeof line, endChars)) {
+        replace(line,'\n','\0');
+        replace(line,'\r','\0');
+        if (line[0] != '\"') {
+            sscanf(line,"%d",&id);
+        }
+        if (id > max)
+            max = id;
+    }
+    printf("%d\n",max);
+    int stations[max+1];
+    // printf("%lu\n",sizeof stations);
+    // int i;
+    // for (i = 0; i < max+1; i++)
+    //     stations[i] = 0;
+    // fseek(F, SEEK_SET,0);
+    // while (fgetStr(F, line, sizeof line, endChars)) {
+    //     replace(line,'\n','\0');
+    //     replace(line,'\r','\0');
+    //     if (line[0] != '\"') {
+    //         sscanf(line,"%d",&id);
+    //         stations[id] = 1;
+    //     }
+    // }
+    // return sum(stations,max+1);
 }
 
 void* getGraphFromFile(char* filename, alscd* Session) {
@@ -115,9 +145,12 @@ double tempsRER(long double lat1, long double lon1, long double lat2, long doubl
 
 int main(int argc, char **argv) {
   alscd* Sess = NewLscdAlloc();
-  //getGraphFromFile("data.txt",Sess);
+  FILE* F = fopen("../data/useful bdd/GraphMetroRER.txt","r");
+  printf("There are %d stations\n",countStations(F));
+  fclose(F);
+  // getGraphFromFile("data.txt",Sess);
   // printf("%f\n",tempsPieton(48.783315, 2.286803, 47.884158, 6.275417));
-  printf("%lu\n",sizeof(sta));
+  // printf("%lu\n",sizeof(sta));
   FreeAll(Sess);
   return 0;
 }
