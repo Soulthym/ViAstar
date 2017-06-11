@@ -4,6 +4,7 @@
 #include <float.h>
 #include <math.h>
 #include <string.h>
+#include <ctype.h>
 
 #include "main.h"
 
@@ -21,10 +22,19 @@ typedef struct {
 } sta;
 
 typedef struct {
+	char line[5];
 	int type; //0 pieton    1 metro     2 RER
 	double time;
 } move;
 
+typedef struct {
+	double time;
+	char beg[50];
+	char end[50];
+	int type;
+} path;
+
+void lower(char* str);
 long double deg2rad(long double deg);
 size_t fgetStr(FILE* F,char* str, size_t maxSize, char* endChars);
 void replace(char *chaine, char find, char new);
@@ -38,5 +48,6 @@ double tempsPieton(long double lat1, long double lon1, long double lat2, long do
 double tempsMetro(long double lat1, long double lon1, long double lat2, long double lon2);
 double tempsRER(long double lat1, long double lon1, long double lat2, long double lon2);
 move** getMatrix(alscd* Session, char* filename, sta* stations, int size);
+path getPath(char* filename);
 
 #endif

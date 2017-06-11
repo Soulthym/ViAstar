@@ -11,10 +11,10 @@ EXE: main.o libs.o main.h
 	gcc -Wall -o EXE main.o libs.o -g -lm
 
 LANCEMENT:
-	./EXE
+	./EXE "porte d'auteuil" "chardon-lagache"
 
 LANCEMENTVAL:
-	valgrind --leak-check=full ./EXE
+	valgrind --leak-check=full ./EXE "porte d'auteuil" "chardon-lagache"
 
 RM:
 	rm *.o

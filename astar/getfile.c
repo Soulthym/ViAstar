@@ -3,6 +3,14 @@
 
 #include "getfile.h"
 
+void lower(char* str) {
+	int i;
+	for (i = 0; str[i] != '\0'; i++){
+		str[i] = (char)tolower(str[i]);
+	}
+	// printf("%s\n",str);
+}
+
 long double deg2rad(long double deg) {
 	return (deg * pi / 180);
 }
@@ -90,6 +98,7 @@ sta* getStations(char* filename, int* sizeret) {
 					*findlast(name,'\"') = '\0';
 					replace(name,' ','_');
 					// printf("%s\n",name);
+					lower(name);
 					sscanf(name, "%*d_\"%s",stations[size-1].name);
 					replace(stations[size-1].name,'_',' ');
 					// printf("%s\n",stations[size-1].name);
@@ -151,6 +160,7 @@ move** getMatrix(alscd* Session, char* filename, sta* stations, int size) {
 		char endChars[4] = {'\n', EOF, '\r', '\0'};
 		char rer[27] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 		char metro[11] = "0123456789";
+		char ligne[5] = {'\0'};
 		int skip = 0, idBeg = 0, idEnd = 0;
 		long double lat1 = 0,lat2 = 0,lon1 = 0,lon2 = 0;
 		double t = 0;
@@ -162,12 +172,15 @@ move** getMatrix(alscd* Session, char* filename, sta* stations, int size) {
 			replace(line,'\n','\0');
 			replace(line,'\r','\0');
 			if (line[0] == '\"') {
-				if (strchr(metro,line[1]))
+				if (strchr(metro,line[1])) {
 					type = METRO;
-				else if (strchr(rer,line[1]))
+				} else if (strchr(rer,line[1])) {
 					type = RER;
+				}
 				skip = 1;
-				// printf("New line %s\n",line);
+				replace(line,'\"','\0');
+				memcpy(ligne,line+sizeof(char),5);
+				replace(ligne,'\"','\0');
 			} else {
 				if (!(skip)) {
 					sscanf(prev,"%d",&idBeg);
@@ -191,6 +204,7 @@ move** getMatrix(alscd* Session, char* filename, sta* stations, int size) {
 							// printf("%lf\tPIETON\n",t);
 							break;
 					}
+					memcpy(Matrix[isinSta(stations,size,idBeg)-1][isinSta(stations,size,idEnd)-1].line,ligne,5);
 					Matrix[isinSta(stations,size,idBeg)-1][isinSta(stations,size,idEnd)-1].time = t;
 					Matrix[isinSta(stations,size,idBeg)-1][isinSta(stations,size,idEnd)-1].type = type;
 					// Matrix[idBeg][idEnd].type = type;
@@ -215,6 +229,36 @@ move** getMatrix(alscd* Session, char* filename, sta* stations, int size) {
 	} else {
 		printf("Couldn't open file %s",filename);
 		exit (-1);
+	}
+}
+
+path getPath(char* filename) {
+	FILE* F = NULL;
+	path P;
+	char endChars[4] = {'\n', EOF, '\r', '\0'};
+	char line[255] = {'\0'};
+	F = fopen(filename,"r");
+	if (F) {
+		fgetStr(F, line ,sizeof line, endChars);
+		P.time = (double)atoi(line);
+		fgetStr(F, line ,sizeof line, endChars);
+		replace(line,'\n','\0');
+		replace(line,'\r','\0');
+		memcpy(P.beg,line,50);
+		fgetStr(F, line ,sizeof line, endChars);
+		replace(line,'\n','\0');
+		replace(line,'\r','\0');
+		memcpy(P.end,line,50);
+		fgetStr(F, line ,sizeof line, endChars);
+		P.type = atoi(line);
+		// printf("%lf\n",P.time);
+		// printf("%lf\n%s -> %s\n%d\n",P.time,P.beg,P.end,P.type);
+		fclose(F);
+		return P;
+	} else {
+		printf("Couldn't open file %s",filename);
+		exit (-1);
+		// return NULL;
 	}
 }
 
