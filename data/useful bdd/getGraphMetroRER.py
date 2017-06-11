@@ -68,7 +68,6 @@ with open ("voyageMetroRER.txt", "r") as Trips:
         Graph.close()
     Trips.close()
 
-
 with open ("voyageClean.txt", "r") as Trips:
     with open ("GraphTotal.txt", "w+") as Graph:
         for line in Trips:

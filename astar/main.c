@@ -5,6 +5,18 @@
 
 #define pi 3.14159265358979323846
 
+typedef struct {
+    int id;
+    char name[50];
+    long double lat;
+    long double lon;
+} sta;
+
+typedef struct {
+    int type; //0 pieton    1 metro     2 RER
+    double time;
+} move;
+
 long double deg2rad(long double deg) {
   return (deg * pi / 180);
 }
@@ -46,82 +58,51 @@ int sum(int* Tab, int size) {
     return sum;
 }
 
-int countStations(FILE* F) {
-    int id = 0;
-    int max = 0;
-    char line[255] = {'\0'};
-    char endChars[4] = {'\n', EOF, '\r', '\0'};
-    fseek(F, SEEK_SET,0);
-    while (fgetStr(F, line ,sizeof line, endChars)) {
-        replace(line,'\n','\0');
-        replace(line,'\r','\0');
-        if (line[0] != '\"') {
-            sscanf(line,"%d",&id);
+int isinSta(sta* Tab, size_t size, int value) {
+    size_t i;
+    for (i = 0; i < size; i++) {
+        if (Tab[i].id == value) {
+            return 1;
         }
-        if (id > max)
-            max = id;
     }
-    printf("%d\n",max);
-    int stations[max+1];
-    // printf("%lu\n",sizeof stations);
-    // int i;
-    // for (i = 0; i < max+1; i++)
-    //     stations[i] = 0;
-    // fseek(F, SEEK_SET,0);
-    // while (fgetStr(F, line, sizeof line, endChars)) {
-    //     replace(line,'\n','\0');
-    //     replace(line,'\r','\0');
-    //     if (line[0] != '\"') {
-    //         sscanf(line,"%d",&id);
-    //         stations[id] = 1;
-    //     }
-    // }
-    // return sum(stations,max+1);
+    return 0;
 }
 
-void* getGraphFromFile(char* filename, alscd* Session) {
-  FILE* F = NULL;
-  F = fopen(filename,"r");
-  if (F) {
-    fseek(F, 0L, SEEK_SET);
-    char c = EOF;
-    char ligne[3] = {'\0'};
-    char station[50] = {'\0'};
-    int id = -1;
-    long double lat = .0;
-    long double lon = .0;
-    while(1) {
-      c = fgetc(F);
-      if (c == '_'){
-        fscanf(F,"%s\n",ligne);
-        printf("ligne : %s\n",ligne);
-      }
-      else if (c == EOF)
-        break;
-      else {
-        fseek(F,-1, SEEK_CUR);
-        fscanf(F,"%d\n",&id);
-        fscanf(F,"%s\n",station);
-        fscanf(F,"%Lf\n",&lat);
-        fscanf(F,"%Lf\n",&lon);
-        printf("\tstation : %s\n",station);
-        printf("\t\tid : %d\n",id);
-        printf("\t\tlat : %.17Lg\n",lat);
-        printf("\t\tlon : %.17Lg\n",lon);
-      }
+sta* getStations(char* filename, int* sizeret) {
+    FILE* F = NULL;
+    F = fopen(filename,"r");
+    if (F) {
+        fseek(F, 0, SEEK_SET);
+        int id = 0;
+        char line[255] = {'\0'};
+        char endChars[4] = {'\n', EOF, '\r', '\0'};
+        sta *stations = NULL;
+        int size = 1, i;
+        stations = malloc(sizeof(sta));
+        while (fgetStr(F, line ,sizeof line, endChars)) {
+            replace(line,'\n','\0');
+            replace(line,'\r','\0');
+            if (line[0] != '\"') {
+                sscanf(line,"%d",&id);
+                if (isinSta(stations, size, id) == 0) {
+                    size++;
+                    stations = realloc(stations,sizeof(sta)*size);
+                    stations[size-1].id = id;
+                }
+            }
+        }
+        for (i = 0; i < size; i++)
+            printf("%d_%d\n",i,stations[i].id);
+        fclose(F);
+        *sizeret = size;
+        return stations;
+    } else {
+        printf("Couldn't open file %s",filename);
+        exit (-1);
     }
-    fclose(F);
-    return NULL;
-  } else {
-    printf("EMPTY FILE \"%s\"\n",filename);
-    exit(-1);
-  }
 }
 
 double distanceLatLon(long double lat1, long double lon1, long double lat2, long double lon2) {
-    // double distance = 6367445.0;
-    // double distance = 6378137.0;
-    // double distance = 6356752.3;
     double distance = 6371000.0;
     lat1 = deg2rad(lat1);
     lon1 = deg2rad(lon1);
@@ -145,12 +126,18 @@ double tempsRER(long double lat1, long double lon1, long double lat2, long doubl
 
 int main(int argc, char **argv) {
   alscd* Sess = NewLscdAlloc();
-  FILE* F = fopen("../data/useful bdd/GraphMetroRER.txt","r");
-  printf("There are %d stations\n",countStations(F));
-  fclose(F);
-  // getGraphFromFile("data.txt",Sess);
-  // printf("%f\n",tempsPieton(48.783315, 2.286803, 47.884158, 6.275417));
-  // printf("%lu\n",sizeof(sta));
+  int size = 0;
+  sta* stations = NULL;
+  move* Matrix = NULL;
+  stations = getStations("../data/useful bdd/GraphMetroRER.txt", &size);
+  // Matrix = getMatrix("");
+  printf("There are %d stations\n", size);
+  printf("Each station is %lu bytes\n", sizeof(sta));
+  printf("Each move is    %lu bytes\n", sizeof(move));
+  printf("Memory size : \n");
+  printf("Stations take   %d bytes\n", size*(int)sizeof(sta));
+  printf("Matrix takes    %d bytes\n", size*size*(int)sizeof(move));
   FreeAll(Sess);
+  free(stations);
   return 0;
 }
