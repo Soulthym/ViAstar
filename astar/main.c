@@ -1,11 +1,37 @@
 #include "main.h"
 
-// int idMinValue(move* M,int size,int id) {
-// 	int i;
-// 	for (i = 0; i < size; i++) {
-//
-// 	}
-// }
+typedef struct {
+	double heuristique;
+	double timespent;
+	int type;
+	int by;
+} star;
+
+int minValue(*star S,int size,int id) {
+	int i,imin = 0;
+	double min = S[0];
+	for (i = 1; i < size; i++) {
+		if (S[i] < min) {
+			min = S[i];
+			imin = i;
+		}
+	}
+	return imin;
+}
+
+star* Astar(alscd* Session, sta* stations, move** Matrix, int size, int idBeg, int idEnd) {
+	int i,id;
+	star* S = Alloc(Session, size*sizeof(star));
+	// Initialisation
+	for (i = 0; i < size; i++){
+		S[i].heuristique = distanceLatLon(stations[i].lat,stations[i].lon,stations[idEnd].lat,stations[idEnd].lon);
+		S[i].timespent = 0;
+		S[i].type = PIETON;
+		S[i].by = idBeg;
+	}
+	id = idBeg;
+	for ()
+}
 
 int main(int argc, char **argv) {
 	system("tabs 4");
