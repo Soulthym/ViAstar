@@ -16,6 +16,7 @@
 
 typedef struct {
 	int id;
+	char ligne[5];
 	char name[50];
 	long double lat;
 	long double lon;

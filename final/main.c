@@ -88,7 +88,7 @@ star* Astar(alscd* Session, sta* stations, move** Matrix, int size, int idBeg, i
 	return S;
 }
 
-void out(path P, star* S, int idBeg, int idEnd,sta* stations,char* filename){
+void out(path P, star* S, int idBeg, int idEnd,sta* stations, move** Matrix, char* filename){
 	FILE* F = NULL;
 	F = fopen(filename,"w+");
 	if (F) {
@@ -102,10 +102,9 @@ void out(path P, star* S, int idBeg, int idEnd,sta* stations,char* filename){
 			PATH[size-1] = S[i].by;
 			i = S[i].by;
 		}
-		printf("Path : [");
+		printf("Path : \n");
 		for (i = 0; i < size; i++)
-			printf("%d ",PATH[i]);
-		printf("]\n");
+			printf("%d\t%s\t%s\n",PATH[i], stations[PATH[i]].ligne, stations[PATH[i]].name);
 		int tb = (int)P.time - 1495584000;
 		int te = (int)S[idEnd].timespent + tb;
 		int hb = tb/3600;
@@ -117,20 +116,24 @@ void out(path P, star* S, int idBeg, int idEnd,sta* stations,char* filename){
 		char stop[50] = {'\0'};
 		fprintf(F,"Suivre l'itinéraire suivant:\n");
 		memcpy(stop,stations[PATH[size-1]].name,50);
+		int skip = 0;
 		for(i = size-1; i >=-1; i--) {
-			if (strcmp(stations[PATH[i]].name,stop)) {
-				switch (S[PATH[i]].type) {
-					case 0:
+			if (strcmp(stations[PATH[i]].name,stop)) skip = 0 ; else skip = 1;
+			switch (S[PATH[i]].type) {
+				case 0:
+					if (!(skip)) {
 						fprintf(F,"A pied : ");
-						break;
-					case 1:
-						fprintf(F,"Metro : ");
-						break;
-					case 2:
-						fprintf(F,"RER : ");
-						break;
-				}
-				fprintf(F,"%s\n",stop);
+						fprintf(F,"%s\n",stop);
+					}
+					break;
+				case 1:
+					fprintf(F,"Metro %s: ",stations[PATH[i]].ligne);
+					fprintf(F,"%s\n",stop);
+					break;
+				case 2:
+					fprintf(F,"RER %s: ",stations[PATH[i]].ligne);
+					fprintf(F,"%s\n",stop);
+					break;
 			}
 			memcpy(stop,stations[PATH[i]].name,50);
 		}
@@ -142,14 +145,14 @@ void out(path P, star* S, int idBeg, int idEnd,sta* stations,char* filename){
 }
 
 int main(int argc, char **argv) {
-	system("tabs 4");
+	system("tabs 6");
 	alscd* Sess = NewLscdAlloc();
 	int size = 0,i,j;
 	sta* stations = NULL;
 	move** Matrix = NULL;
 	star* S = NULL;
-	stations = getStations("../data/useful bdd/GraphMetroRER.txt", &size);
-	Matrix = getMatrix(Sess,"../data/useful bdd/GraphMetroRER.txt", stations, size);
+	stations = getStations("GraphMetroRER.txt", &size);
+	Matrix = getMatrix(Sess,"GraphMetroRER.txt", stations, size);
 	printf("There are %d stations\n", size);
 	printf("\tEach station is %lu bytes\n", sizeof(sta));
 	printf("\tEach move is    %lu bytes\n", sizeof(move));
@@ -187,7 +190,7 @@ int main(int argc, char **argv) {
 		S = Astar(Sess,stations,Matrix,size,idBeg,idEnd);
 		if (S) {
 			printf("Arrived in %lf s\n",S[idEnd].timespent);
-			out(P,S,idBeg,idEnd,stations,"feuille_route.txt");
+			out(P,S,idBeg,idEnd,stations,Matrix,"feuille_route.txt");
 		} else
 			printf("Problem with Astar\n");
 	} else printf("Couldn't find those stations\n");

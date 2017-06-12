@@ -1,25 +1,26 @@
-1:2
-6:42
+15:30
+16:12
 Suivre l'itinéraire suivant:
-fontenay-aux-roses
-sceaux
-bourg-la-reine
-cite universitaire
-porte d'orleans (general leclerc)
-alesia
-mouton-duvernet
-denfert-rochereau
-raspail
-vavin
-montparnasse-bienvenue
-saint-placide
-saint-sulpice
-saint-germain des pres
-odeon
-saint-michel
-cite
-chatelet
-gare de lyon
-nation
-vincennes
-fontenay-sous-bois
+RER B : fontenay-aux-roses
+RER B : sceaux
+RER B : bourg-la-reine
+RER B : cite universitaire
+RER B : denfert-rochereau
+RER B : port royal
+RER B : luxembourg
+A pied : saint-michel notre-dame
+Metro 4 : saint-michel
+Metro 4 : cite
+Metro 4 : chatelet
+Metro 4 : les halles
+Metro 4 : etienne marcel
+Metro 4 : reaumur-sebastopol
+Metro 4 : strasbourg-saint-denis
+Metro 4 : chateau d'eau
+Metro 4 : gare de l'est (verdun)
+Metro 4 : gare du nord
+Metro 2 : barbes-rochechouart
+Metro 2 : anvers
+Metro 13 : pigalle
+Metro 13 : saint-georges
+A pied : notre-dame de lorette

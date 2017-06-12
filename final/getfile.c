@@ -86,10 +86,16 @@ sta* getStations(char* filename, int* sizeret) {
 		stations = malloc(sizeof(sta));
 		stations[0].id = -1;
 		char name[255] = {'\0'};
+		char ligne[5] = {'\0'};
 		while (fgetStr(F, line ,sizeof line, endChars)) {
 			replace(line,'\n','\0');
 			replace(line,'\r','\0');
-			if (line[0] != '\"') {
+			if (line[0] == '\"') {
+				memcpy(ligne, &line[1],4);
+				replace(ligne, '\"',' ');
+				ligne[4] = '\0';
+				// printf("%s\n",ligne);
+			} else {
 				sscanf(line,"%d",&id);
 				if (isinSta(stations, size, id) == 0) {
 					memcpy(name,line,sizeof(char)*255);
@@ -99,6 +105,7 @@ sta* getStations(char* filename, int* sizeret) {
 					replace(name,' ','_');
 					// printf("%s\n",name);
 					lower(name);
+					memcpy(stations[size-1].ligne,ligne,5);
 					sscanf(name, "%*d_\"%s",stations[size-1].name);
 					replace(stations[size-1].name,'_',' ');
 					// printf("%s\n",stations[size-1].name);
