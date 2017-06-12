@@ -1,4 +1,5 @@
 import os
+import math
 import Tkinter as t
 import tkMessageBox as mb
 import time
@@ -6,6 +7,7 @@ from Autocomplementation import AutocompleteEntry
 
 #######################-DEFINITION_LISTE-#################################
 station_list=[]
+coorlist = []
 FIC = open("nomsArrets.txt", "r")
 contenu=FIC.read()
 contenu = contenu.lower()
@@ -132,10 +134,16 @@ def Verification(depart, arrivee, corr, cond, h_dep, heure, minute):
     else:
         mb.showinfo(title="Merci", message="Votre demande a ete prise en compte")
         Envoie_Infos(depart, arrivee, corr, cond, h_dep, heure, minute)
-        system("./EXE")
+        os.system("./EXE")
+        Recup_Infos(Affich)
         
 
 def Verif() : Verification(Depart, Arrivee, Correspondance, Cond, H_Dep, H, M)
+
+def Quit():
+    open("feuille_route.txt", "w")
+    fenetre.destroy()
+
 
 #-- Fonction qui cree des butons pour valider et quitter la page.
 #-- Le bouton valider appelle la fonction des verification de la saisie
@@ -144,7 +152,8 @@ def Boutons(Saisie):
     valider=t.Button(Saisie, text="Valider", command=Verif)
     valider.grid(column=6, row=2)
 
-    quitter=t.Button(Saisie, text="Quitter", command=fenetre.destroy)
+
+    quitter=t.Button(Saisie, text="Quitter", command=Quit)
     quitter.grid(column=6, row=3)
 
 #--Fonction qui represente le trajet sur un graph
@@ -166,6 +175,7 @@ def Affichage_du_trajet(frame, trajet, hd, ha) :
 #--Fonction qui lit les infos sur le trajet contenues dans le fichier et les
 #--affiche
 def Recup_Infos(frame) :
+    fond.delete("point")
     with open("feuille_route.txt", "r") as R :
 
         h_dep = R.readline().rstrip('\n')
@@ -173,7 +183,64 @@ def Recup_Infos(frame) :
 
         Info = R.read().rstrip('\n')
 
+    tracePoint()
     Affichage_du_trajet(frame, Info, h_dep, h_arr)
+
+def getCoor(stop):
+    phi0 = math.cos(48.8544697821) #cos of the lat of the center of paris (Louvre)
+    with open("../data/useful bdd/bddArrets.txt", "r") as bdd:
+        for line in bdd:
+            lineArray = line.split(",,")
+            name = lineArray[1].lower().strip('"')
+            if name == stop:
+                lat = lineArray[2].split(",")[0]
+                lon = lineArray[2].split(",")[1]
+                x = 6300*float(lon)*phi0
+                y = 6300*float(lat)
+                x /= 1.5429
+                y /= 6.99827
+                x -= 1240
+                y -= 43814
+                x = int(x)
+                y = int(y)
+
+                y = 350-y
+                coorlist.append(str(x)+","+str(y))
+                return
+
+def AffCarte():
+	with open("feuille_route.txt", "r") as stops:
+            try:
+                stops.next()
+            except StopIteration:
+                return
+	    stops.next()
+	    stops.next()
+	    for line in stops:
+                arr = line.split(" : ")[1].strip("\n")
+	        print arr
+                getCoor(arr)
+            return    
+
+def tracePoint():
+
+    AffCarte()
+    photo = t.PhotoImage(file = "fond2.png")
+    fond.create_image(250,175, image=photo)
+
+    for i in range(len(coorlist)):
+
+        x = int(coorlist[i].split(",")[0])
+        y = int(coorlist[i].split(",")[1])
+    
+        print x,y
+        if (i > 0):
+            xlast = int(coorlist[i-1].split(",")[0])
+            ylast = int(coorlist[i-1].split(",")[1])
+            fond.create_line(xlast, ylast, x, y, tags= "point")
+        fond.create_oval(x-2,y-2, x+2, y+2, fill="blue", tags="point")
+    coorlist[:] = []
+
 
 #############################-MAIN-#######################################
 fenetre=t.Tk()
@@ -210,11 +277,13 @@ Saisie.grid(row=1, column=0, columnspan=2, sticky='ew', padx=70, ipady=5)
 fond=t.Canvas(fenetre, width=500, height=350, background="darkgray")
 fond.grid(row=2, column=0, padx=(70,0), pady=(5,0))
 
+
 #-- Frame d'affichage du trajet
 Affich = t.LabelFrame(fenetre, text="Voici le trajet a suivre", border=3,
                       relief=t.GROOVE, width=200, height=350, font="arial 16 bold")
-Recup_Infos(Affich)
 
 Affich.grid(row=2, column=1, padx=(20,70), pady=(5,0), sticky='nesw', ipadx=5)
+photo = t.PhotoImage(file = "fond2.png")
+fond.create_image(250,175, image=photo)
 
 fenetre.mainloop()
