@@ -136,11 +136,13 @@ def Verification(depart, arrivee, corr, cond, h_dep, heure, minute):
         Envoie_Infos(depart, arrivee, corr, cond, h_dep, heure, minute)
         os.system("./EXE")
         Recup_Infos(Affich)
-        
+
 
 def Verif() : Verification(Depart, Arrivee, Correspondance, Cond, H_Dep, H, M)
 
 def Quit():
+    os.system("./EXE")
+
     open("feuille_route.txt", "w")
     fenetre.destroy()
 
@@ -220,7 +222,7 @@ def AffCarte():
                 arr = line.split(" : ")[1].strip("\n")
 	        print arr
                 getCoor(arr)
-            return    
+            return
 
 def tracePoint():
 
@@ -232,7 +234,7 @@ def tracePoint():
 
         x = int(coorlist[i].split(",")[0])
         y = int(coorlist[i].split(",")[1])
-    
+
         print x,y
         if (i > 0):
             xlast = int(coorlist[i-1].split(",")[0])
