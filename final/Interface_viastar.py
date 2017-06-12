@@ -141,7 +141,7 @@ def Verification(depart, arrivee, corr, cond, h_dep, heure, minute):
 def Verif() : Verification(Depart, Arrivee, Correspondance, Cond, H_Dep, H, M)
 
 def Quit():
-    os.system("./EXE")
+    # os.system("./EXE")
 
     open("feuille_route.txt", "w")
     fenetre.destroy()
