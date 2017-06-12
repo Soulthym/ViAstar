@@ -1,4 +1,16 @@
-1:2
-1:4
-Ligne : 10
-Station de depart : chardon-lagache
+0:0
+0:30
+Suivre l'itinéraire suivant:
+RER : fontenay-aux-roses
+RER : sceaux
+RER : bourg-la-reine
+RER : cite universitaire
+RER : denfert-rochereau
+RER : port royal
+RER : luxembourg
+RER : saint-michel notre-dame
+RER : chatelet-les halles
+RER : gare de lyon
+RER : nation
+RER : vincennes
+A pied : fontenay-sous-bois

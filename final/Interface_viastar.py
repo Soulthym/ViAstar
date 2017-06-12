@@ -1,3 +1,4 @@
+import os
 import Tkinter as t
 import tkMessageBox as mb
 import time
@@ -131,6 +132,7 @@ def Verification(depart, arrivee, corr, cond, h_dep, heure, minute):
     else:
         mb.showinfo(title="Merci", message="Votre demande a ete prise en compte")
         Envoie_Infos(depart, arrivee, corr, cond, h_dep, heure, minute)
+        system("./EXE")
 
 def Verif() : Verification(Depart, Arrivee, Correspondance, Cond, H_Dep, H, M)
 
