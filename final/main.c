@@ -144,7 +144,7 @@ void out(path P, star* S, int idBeg, int idEnd,sta* stations,char* filename){
 int main(int argc, char **argv) {
 	system("tabs 4");
 	alscd* Sess = NewLscdAlloc();
-	int size = 0,i;//,j;
+	int size = 0,i,j;
 	sta* stations = NULL;
 	move** Matrix = NULL;
 	star* S = NULL;
@@ -169,11 +169,13 @@ int main(int argc, char **argv) {
 	}
 	if (P.type == 3){
 		printf("%s\n",P.avoid);
-		int id = findName(stations,size,P.avoid);
-		int x = findId(stations,size,id);
-		for (i = 0; i < size; i++) {
-			Matrix[x][i].time = 1.0/0.0;
-			Matrix[i][x].time = 1.0/0.0;
+		for (i = 0; i < size; i++){
+			if (!(strcmp(stations[i].name,P.avoid))) {
+				 for (j = 0; j < size; j++) {
+		 			Matrix[j][i].time = 1.0/0.0;
+		 			Matrix[i][j].time = 1.0/0.0;
+		 		}
+			}
 		}
 	}
 	printf("%lf\n%s -> %s\n%d\n",P.time, P.beg,P.end,P.type);

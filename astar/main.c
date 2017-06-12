@@ -118,7 +118,7 @@ void out(path P, star* S, int idBeg, int idEnd,sta* stations,char* filename){
 		fprintf(F,"Suivre l'itinéraire suivant:\n");
 		memcpy(stop,stations[PATH[size-1]].name,50);
 		for(i = size-1; i >=-1; i--) {
-			if (strcmp(stations[PATH[i]].name,stop)) {
+            if (1) {
 				switch (S[PATH[i]].type) {
 					case 0:
 						fprintf(F,"A pied : ");
@@ -132,7 +132,6 @@ void out(path P, star* S, int idBeg, int idEnd,sta* stations,char* filename){
 				}
 				fprintf(F,"%s\n",stop);
 			}
-			memcpy(stop,stations[PATH[i]].name,50);
 		}
 		fclose(F);
 	} else {
@@ -169,8 +168,10 @@ int main(int argc, char **argv) {
 	}
 	if (P.type == 3){
 		printf("%s\n",P.avoid);
-		int id = findName(stations,size,P.avoid);
-		int x = findId(stations,size,id);
+        for (i = 0; i < size; i++){
+    		if (!(strcmp(stations[i].name,name)))
+    			 stations[i].id;
+    	}
 		for (i = 0; i < size; i++) {
 			Matrix[x][i].time = 1.0/0.0;
 			Matrix[i][x].time = 1.0/0.0;
