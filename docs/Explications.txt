@@ -1,0 +1,62 @@
+PROGRAMMES
+bddVirgule.py
+	Remplace tous les séparateurs de bddArrets.txt en ',' et crée un fichier texte bddArretsVirgule.txt
+
+ListeGraph.py
+	Récupère la ligne dans voyage.txt et les arrêts associés représentés par leur stop_ID
+	Cherche un stop_ID dans BddArretsVirgule.txt et renvoit le stop_ID, le nom de l'arrêt, sa latitude et longitude
+	Ajoute une ligne et toutes les informations des arrêts associés dans une liste listStopsAndLines
+	Crée un fichier texte Graph.txt comportant chaque arrêt avec sa ligne, son nom et sa position géographique
+
+conventionEcritureThy.py
+	Crée un fichier texte Final.txt à partir de Graph.txt conforme aux demandes pour A*, ce qui veut dire remplacer les séparateurs par des '\n', enlever tous les guillements et placer un '_' devant les noms de lignes
+
+RechercheligneStop.py
+	Récupère le nom des arrets dans bddArrets.txt et les ajoute dans une liste si ceux n'y sont pas encore
+
+rechercheLatLong.py
+	Cherche le nom d'un arrêt dans bddArretsVirgules.txt et renvoie la latitude et longitude de l'arrêt
+	
+TESTS
+
+
+FORMATS 
+bddArrets.txt
+	stop_ID,,"stop_Nom",,stop_Latitude,stop_Longitude,,
+	stop_ID,,"stop_Nom",,stop_Latitude,stop_Longitude,,
+
+bddArretsMetroRER.txt
+	stop_ID,,"stop_Nom",,stop_Latitude,stop_Longitude,,
+
+	stop_ID,,"stop_Nom",,stop_Latitude,stop_Longitude,,
+
+bddArretsVirgule.txt
+	stop_ID,"stop_Nom",stop_Latitude,stop_Longitude,
+	stop_ID,"stop_Nom",stop_Latitude,stop_Longitude,
+
+nomsArrets.txt
+	stop_Nom
+	stop_Nom
+
+voyage.txt
+	"ligne_Nom"
+	stop_ID, stop_ID,
+	"ligne_Nom"
+	stop_ID, stop_ID,
+
+Graph.txt
+	"ligne_Nom"
+	stop_ID,"stop_Nom",stop_Latitude,stop_Longitude,
+	"ligne_Nom"
+	stop_ID,"stop_Nom",stop_Latitude,stop_Longitude,
+
+Final.txt
+	_ligne_Nom
+	stop_ID
+	stop_Nom
+	stop_Latitude
+	stop_Longitude
+	stop_ID
+	stop_Nom
+	stop_Latitude
+	stop_Longitude
