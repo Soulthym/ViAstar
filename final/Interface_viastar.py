@@ -16,7 +16,16 @@ FIC.close()
 
 ########################-DEFINITION_FONCTION-#############################
 #--Chargement_Logo
-#def Logo():
+def Logo(m):
+	fond = t.Canvas(m, bg='gray')
+	# photo = t.PhotoImage(file='fond2.png')
+	photo1 = t.PhotoImage(file = "fond2.png")
+	fond.create_image(150,79, image=photo1)
+	# fond.create_image(150,79,image = photo) # image a centrer largeur//2+1, hauteur//2+1,
+	fond.grid(row=0, column=0, columnspan=2)
+
+
+
 
 #-- Fonction qui place des zones de saisies et recupere le point de depart et
 #-- d'arrivee de l'utilisateur
@@ -261,9 +270,10 @@ Cond=t.IntVar()
 H_Dep = t.IntVar()
 
             ###########################################
-Titre = t.Label(fenetre, text="ViA*")
-Titre.config(font="sans 24")
-Titre.grid(row=0, column=0, columnspan=2)
+
+# Titre = t.Label(fenetre, text="ViA*")
+# Titre.config(font="sans 24")
+# Logo(fenetre)
 
 #--Frame de saisie
 Saisie = t.LabelFrame(fenetre, text="Saisissez votre trajet", border=3, relief=t.GROOVE,
@@ -279,6 +289,12 @@ Saisie.grid(row=1, column=0, columnspan=2, sticky='ew', padx=70, ipady=5)
 fond=t.Canvas(fenetre, width=500, height=350, background="darkgray")
 fond.grid(row=2, column=0, padx=(70,0), pady=(5,0))
 
+fond1 = t.Canvas(fenetre,width=300, height=150)
+# photo = t.PhotoImage(file='fond2.png')
+photo1 = t.PhotoImage(file = "LogoV3.png")
+fond1.create_image(150,79, image=photo1)
+# fond.create_image(150,79,image = photo) # image a centrer largeur//2+1, hauteur//2+1,
+fond1.grid(row=0, column=0, columnspan=2)
 
 #-- Frame d'affichage du trajet
 Affich = t.LabelFrame(fenetre, text="Voici le trajet a suivre", border=3,
